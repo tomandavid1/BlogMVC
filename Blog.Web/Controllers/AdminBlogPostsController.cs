@@ -22,7 +22,7 @@ namespace Blog.Web.Controllers
 		// Get method for displaying available tags on page
 
 		[HttpGet]
-		public async Task<IActionResult> AddAsync()
+		public async Task<IActionResult> Add()
 		{
 			// Get Tags from repository as list
 
@@ -39,7 +39,7 @@ namespace Blog.Web.Controllers
 		// Post method for saving to database
 
 		[HttpPost]
-		public async Task<IActionResult> AddAsync(AddBlogPostRequest addBlogPostRequest)
+		public async Task<IActionResult> Add(AddBlogPostRequest addBlogPostRequest)
 		{
 			// Map view model to domain model
 
@@ -53,7 +53,7 @@ namespace Blog.Web.Controllers
 				UrlHandle = addBlogPostRequest.UrlHandle,
 				PublishedDate = addBlogPostRequest.PublishedDate,
 				Author = addBlogPostRequest.Author,
-				IsVisible = addBlogPostRequest.IsVisible,
+				IsVisible = addBlogPostRequest.IsVisible
 
 			};
 
@@ -75,6 +75,15 @@ namespace Blog.Web.Controllers
 			await blogPostRepository.AddAsync(blogPost);
 
 			return RedirectToAction("Add");
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> List()
+		{
+			// Call repository to get data
+			var blogPosts = await blogPostRepository.GetAllAsync();
+
+			return View(blogPosts);
 		}
 	}
 }
