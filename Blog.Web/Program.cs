@@ -1,6 +1,8 @@
 using Blog.Web.Data;
 using Blog.Web.Repositories;
 using Microsoft.EntityFrameworkCore;
+using SmartBreadcrumbs.Extensions;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,9 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("BlogDbConnection
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 // Add injection to services - when calling IBlogPostRepository, give BlogPostRepository
 builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+
+// Breadcrumbs
+
 
 var app = builder.Build();
 

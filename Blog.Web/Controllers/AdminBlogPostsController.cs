@@ -3,6 +3,8 @@ using Blog.Web.Models.ViewModels;
 using Blog.Web.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SmartBreadcrumbs.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Blog.Web.Controllers
 {
@@ -20,7 +22,6 @@ namespace Blog.Web.Controllers
 		}
 
 		// Get method for displaying available tags on page
-
 		[HttpGet]
 		public async Task<IActionResult> Add()
 		{
@@ -84,6 +85,44 @@ namespace Blog.Web.Controllers
 			var blogPosts = await blogPostRepository.GetAllAsync();
 
 			return View(blogPosts);
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> Edit(Guid id)
+		{
+			// Retrieve result from repository
+
+			var blogPost = await blogPostRepository.GetAsync(id);
+
+			var tagsDomainModel = await tagRepository.GetAllAsync();
+
+			// map the domain model to view model
+			if (blogPost != null)
+			{
+				var model = new EditBlogPostRequest
+				{
+					Id = blogPost.Id,
+					Heading = blogPost.Heading,
+					PageTitle = blogPost.PageTitle,
+					Content = blogPost.Content,
+					ShortDescription = blogPost.ShortDescription,
+					FeaturedImageUrl = blogPost.FeaturedImageUrl,
+					UrlHandle = blogPost.UrlHandle,
+					PublishedDate = blogPost.PublishedDate,
+					Author = blogPost.Author,
+					IsVisible = blogPost.IsVisible,
+					Tags = tagsDomainModel.Select(x => new SelectListItem
+					{
+						Text = x.Name,
+						Value = x.Id.ToString()
+					}),
+					SelectedTags = blogPost.Tags.Select(x => x.Id.ToString()).ToArray()
+				};
+
+				return View(model);
+			}
+			// Pass data to view
+			return View(null);
 		}
 	}
 }
